@@ -1,0 +1,25 @@
+<script id="tmpl-calendar" type="text/x-dot-template">
+<div class="calendar">
+    <a class="btn-month-prev" href="javascript:;">&laquo;</a>
+    <a class="btn-month-next" href="javascript:;">&raquo;</a>
+    {{~data.days :month:monthindex}}
+        <div class="month month-{{=monthindex + 1}}">
+            <h2>{{=month.name}} {{=month.year}}</h2>
+            <div class="weekdays">
+                {{~data.weekdays :weekday:weekdayindex}}
+                <div>{{=weekday}}</div>
+                {{~}}
+            </div>
+            <div class="days">
+            {{~month.items :week:weekindex}}
+                <div class="week week-{{=weekindex}}">
+                    {{~week :day:dayindex}}
+                    <div data-day="{{=day.day}}" data-month="{{=day.month}}" data-year="{{=day.year}}" class="day weekday-{{=day.weekday}} {{?day.today}} day-today{{?}}{{?day.prev||day.next}} day-off{{?}}">{{=day.day}}</div>
+                    {{~}}
+                </div>
+            {{~}}
+            </div>
+        </div>
+    {{~}}
+</div>
+</script>
