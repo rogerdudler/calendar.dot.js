@@ -14,6 +14,7 @@
         // set default settings
         var settings = $.extend({
             'months': 2, // how many months should be displayed
+            'weeks': 5,
             'containerSelector': '.calendar', // selector for the calendar container
             'daySelector': '.day', // selector for a day
             'nextSelector': '.btn-month-next', // selector for next month button
@@ -130,32 +131,38 @@
                 var monthindex = 0;
                 for (var m = offset; m < settings.months + offset; m++) {
 
+                    // initialize moment date objects
+                    var momentCurrentMonth = initial.clone().add('months', m);
+                    var momentLastMonth = initial.clone().add('months', m - 1);
+                    var momentNextMonth = initial.clone().add('months', m + 1);
+
                     // initialize values
-                    var days = initial.clone().add('months', m).daysInMonth();
-                    var daysInLastMonth = initial.clone().add('months', m).subtract('months', 1).daysInMonth();
-                    var startOfMonth = initial.clone().add('months', m).startOf('month').day();
+                    var days = momentCurrentMonth.daysInMonth();
+                    var daysInLastMonth = momentLastMonth.daysInMonth();
+                    var startOfMonth = momentCurrentMonth.clone().startOf('month').day();
                     var beginning = startOfMonth >= settings.weekdayOffset ? settings.weekdayOffset : settings.weekdayOffset - 7;
-                    var day = initial.clone().add('months', m).startOf('month').day(beginning).date();
-                    var weeks = 5;
+                    var day = momentCurrentMonth.clone().startOf('month').day(beginning).date();
+                    var weeks = settings.weeks;
 
                     // in which month is the current day
                     var prevMonth = day > 1;
                     var currentMonth = day === 1;
                     var nextMonth = false;
 
+                    // pre-fill data object with information about months
                     data.days[monthindex] = {
-                        'month': initial.clone().add('months', m).month(),
-                        'name': moment.months[initial.clone().add('months', m).month()],
-                        'year': initial.clone().add('months', m).year(),
+                        'month': momentCurrentMonth.month(),
+                        'name': moment.months[momentCurrentMonth.month()],
+                        'year': momentCurrentMonth.year(),
                         'prev': {
-                            'month': initial.clone().add('months', m - 1).month(),
-                            'name': moment.months[initial.clone().add('months', m - 1).month()],
-                            'year': initial.clone().add('months', m - 1).year()
+                            'month': momentLastMonth.month(),
+                            'name': moment.months[momentLastMonth.month()],
+                            'year': momentLastMonth.year()
                         },
                         'next': {
-                            'month': initial.clone().add('months', m + 1).month(),
-                            'name': moment.months[initial.clone().add('months', m + 1).month()],
-                            'year': initial.clone().add('months', m + 1).year()
+                            'month': momentNextMonth.month(),
+                            'name': moment.months[momentNextMonth.month()],
+                            'year': momentNextMonth.year()
                         },
                         'items': []
                     };
