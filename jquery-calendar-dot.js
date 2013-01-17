@@ -13,19 +13,23 @@
 
         // set default settings
         var settings = $.extend({
+
             'months': 2, // how many months should be displayed
-            'weeks': 5,
+            'weeks': 5, // how many weeks should be displayed (per month)
+            'format': 'DD.MM.YYYY', // date format for input field (and validation)
+            'offset': 0, // month offset (selected month + offset is initial month)
+            'weekdayOffset': 1, // start day of the week, 0 = Sunday, 6 = Saturday
+            'position': 'top', // position of flyout (currently only "top" is supported)
+            'language': 'de', // language (be sure to include moment.js language files)
+            'mode': 'single', // is it a "single" date or a date "range"
+
             'containerSelector': '.calendar', // selector for the calendar container
             'daySelector': '.day', // selector for a day
             'nextSelector': '.btn-month-next', // selector for next month button
             'prevSelector': '.btn-month-prev', // selector for previous month button
-            'format': 'DD.MM.YYYY', // date format for input field
-            'appendTo': 'body', // where to append the flyout
-            'offset': 0, // month offset (selected month + offset as initial month)
-            'weekdayOffset': 1, // when to start the week, 1 = Monday, 0 = Sunday
-            'position': 'top', // position of flyout
-            'language': 'de', // language (be sure to include moment.js language files)
-            'changed': function(data) {} // override to handle date changes
+            'appendTo': 'body', // where to append the flyout into the DOM
+
+            'onChange': function(data) {} // override to handle date changes
         }, options);
 
         // set language
@@ -65,8 +69,12 @@
                 var month = $(this).data('month');
                 var year = $(this).data('year');
                 var date = moment(new Date(year, month, day));
+                // TODO: put the following as default into onChange method
                 $this.val(date.format(settings.format));
                 $calendar.hide();
+                var $next = $this.next(':input');
+                $next.focus();
+                settings.onChange(date);
                 return false;
             });
 
